@@ -36,13 +36,16 @@ void main() {
     // When a click event occurs on a feature in the places layer, open a popup at the
     // location of the feature, with description HTML from its properties.
     map.on('click', 'places', (e) {
-      print(e.features[0].id);
-      var coordinates = e.features[0].geometry.coordinates;
-      var description = e.features[0].properties['description'];
-      Popup()
-          .setLngLat(LngLat(coordinates[0], coordinates[1]))
-          .setHTML(description)
-          .addTo(map);
+      if (e.features[0].geometry is GeometryType) {
+        var geom = e.features[0].geometry as GeometryType?;
+        print(e.features[0].id);
+        var coordinates = geom?.coordinates;
+        var description = e.features[0].properties?['description'];
+        Popup()
+            .setLngLat(LngLat(coordinates[0], coordinates[1]))
+            .setHTML(description)
+            .addTo(map);
+      }
     });
 
     // Change the cursor to a pointer when the mouse is over the places layer.

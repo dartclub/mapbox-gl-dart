@@ -1,4 +1,5 @@
 import 'package:mapbox_gl_dart/mapbox_gl_dart.dart';
+import 'package:turf/turf.dart';
 
 void main() {
   Mapbox.accessToken =
@@ -155,22 +156,25 @@ void main() {
       // Change the cursor style as a UI indicator.
       map.getCanvas().style.cursor = 'pointer';
 
-      var coordinates = e.features[0].geometry.coordinates;
-      var description = e.features[0].properties['description'];
+      if (e.features[0].geometry is GeometryType) {
+        var geom = e.features[0].geometry as GeometryType?;
+        var coordinates = geom?.coordinates;
+        var description = e.features[0].properties?['description'];
 
-      // Ensure that if the map is zoomed out such that multiple
-      // copies of the feature are visible, the popup appears
-      // over the copy being pointed to.
-      while ((e.lngLat.lng - coordinates[0]).abs() > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while ((e.lngLat.lng - coordinates[0]).abs() > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        // Populate the popup and set its coordinates
+        // based on the feature found.
+        popup
+            .setLngLat(LngLat(coordinates[0], coordinates[1]))
+            .setHTML(description)
+            .addTo(map);
       }
-
-      // Populate the popup and set its coordinates
-      // based on the feature found.
-      popup
-          .setLngLat(LngLat(coordinates[0], coordinates[1]))
-          .setHTML(description)
-          .addTo(map);
     });
 
     map.on('mouseleave', 'places', (_) {

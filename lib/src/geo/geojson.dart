@@ -4,28 +4,42 @@ import 'package:mapbox_gl_dart/src/interop/interop.dart';
 import 'package:mapbox_gl_dart/src/utils.dart';
 import 'package:turf/turf.dart';
 
-class GeometryObjectWithJs extends GeometryObject {}
+class GeometryObjectWithJsTraits extends GeometryObject
+    implements JsObjectWrapper<GeometryObjectWithJsTraits> {
+  @override
+  // TODO: implement jsObject
+  final GeometryObjectWithJsTraits jsObject;
 
-class JsConverter {
-  static GeometryObject geometryObjectFromJsObject(
-      GeometryObjectJSImpl jsObject) {
-    return Point(coordinates: Position(10, 10));
+  GeometryObjectWithJsTraits(this.jsObject) {
+    
   }
-
-  static Feature featureFromJsObject(FeatureJsImpl jsObject) => Feature(
-        geometry: geometryObjectFromJsObject(jsObject.geometry),
-        id: jsObject.id,
-        properties: dartifyMap(jsObject.properties),
-      );
-
-  static FeatureCollection featureCollectionFromJsObject(
-          FeatureCollectionJsImpl jsObject) =>
-      FeatureCollection(
-        features: jsObject.features.map((f) => featureFromJsObject(f)).toList(),
-      );
 }
 
+class FeatureWithJsTraits extends Feature
+    implements JsObjectWrapper<FeatureJsImpl> {
+  @override
+  final FeatureJsImpl jsObject;
 
+  FeatureWithJsTraits.fromJsObject(this.jsObject)
+      : super(
+          geometry: GeometryObjectWithJsTraits(jsObject.geometry),
+          id: jsObject.id,
+          properties: dartifyMap(jsObject.properties),
+          fields: {},
+        );
+}
+
+class FeatureCollectionWithJsTraits extends FeatureCollection
+    implements JsObjectWrapper<FeatureCollectionJsImpl> {
+  @override
+  final FeatureCollectionJsImpl jsObject;
+
+  FeatureCollectionWithJsTraits(this.jsObject)
+      : super(
+            features: jsObject.features
+                .map((f) => FeatureWithJsTraits.fromJsObject(f))
+                .toList());
+}
 
 // class GeometryObject extends JsObjectWrapper<GeometryJsImpl> {
 //   String get type => jsObject.type;

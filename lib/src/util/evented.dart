@@ -4,6 +4,7 @@ import 'dart:js';
 
 import 'package:mapbox_gl_dart/mapbox_gl_dart.dart';
 import 'package:mapbox_gl_dart/src/interop/interop.dart';
+import 'package:turf/turf.dart';
 
 typedef Listener = dynamic Function(Event object);
 typedef GeoListener = dynamic Function(dynamic object);
@@ -12,8 +13,9 @@ class Event extends JsObjectWrapper<EventJsImpl> {
   String get id => jsObject.id;
   String get type => jsObject.type;
   LngLat get lngLat => LngLat.fromJsObject(jsObject.lngLat);
-  List<Feature> get features =>
-      jsObject.features.map((dynamic f) => Feature.fromJsObject(f)).toList();
+  List<Feature> get features => jsObject.features
+      .map((dynamic f) => FeatureWithJsTraits.fromJsObject(f))
+      .toList();
   Point get point => Point.fromJsObject(jsObject.point);
 
   factory Event({

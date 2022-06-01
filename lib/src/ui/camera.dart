@@ -58,14 +58,14 @@ class CameraOptions extends JsObjectWrapper<CameraOptionsJsImpl> {
 class AnimationOptions extends JsObjectWrapper<AnimationOptionsJsImpl> {
   num get duration => jsObject.duration;
   num Function(num time) get easing => jsObject.easing;
-  Point get offset => Point.fromJsObject(jsObject.offset);
+  ScreenOffset get offset => ScreenOffset.fromJsObject(jsObject.offset);
   bool get animate => jsObject.animate;
   bool get essential => jsObject.essential;
 
   factory AnimationOptions({
     num? duration,
     num Function(num time)? easing,
-    required Point offset,
+    required ScreenOffset offset,
     bool? animate,
     bool? essential,
   }) =>
@@ -146,7 +146,7 @@ class Camera extends Evented {
   ///  @fires moveend
   ///  @returns {MapboxMap} `this`
   ///  @see [Navigate the map with game-like controls](https://www.mapbox.com/mapbox-gl-js/example/game-controls/)
-  MapboxMap panBy(Point offset,
+  MapboxMap panBy(ScreenOffset offset,
           [AnimationOptions? options, dynamic eventData]) =>
       MapboxMap.fromJsObject(jsObject.panBy(offset.jsObject));
 
@@ -404,7 +404,7 @@ class Camera extends Evented {
   ///    padding: {top: 10, bottom:25, left: 15, right: 5}
   ///  });
   ///  @see [Used by BoxZoomHandler](https://www.mapbox.com/mapbox-gl-js/api/#boxzoomhandler)
-  MapboxMap fitScreenCoordinates(Point p0, Point p1, num bearing,
+  MapboxMap fitScreenCoordinates(ScreenOffset p0, ScreenOffset p1, num bearing,
           [dynamic options, dynamic eventData]) =>
       MapboxMap.fromJsObject(
           jsObject.fitScreenCoordinates(p0.jsObject, p1.jsObject, bearing));
