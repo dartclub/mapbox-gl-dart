@@ -2,9 +2,11 @@ library mapboxgl.style.sources.geojson_source;
 
 import 'package:mapbox_gl_dart/mapbox_gl_dart.dart';
 import 'package:mapbox_gl_dart/src/interop/interop.dart';
+import 'package:turf/turf.dart';
 
 class GeoJsonSource extends Source<GeoJsonSourceJsImpl> {
-  FeatureCollection get data => FeatureCollection.fromJsObject(jsObject.data);
+  FeatureCollection get data =>
+      JsConverter.featureCollectionFromJsObject(jsObject.data);
   String? get promoteId => jsObject.promoteId;
 
   factory GeoJsonSource({

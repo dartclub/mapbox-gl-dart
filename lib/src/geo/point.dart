@@ -2,19 +2,19 @@ library mapboxgl.geo.point;
 
 import 'package:mapbox_gl_dart/src/interop/interop.dart';
 
-class Point extends JsObjectWrapper<PointJsImpl> {
+class PointTwo extends JsObjectWrapper<PointJsImpl> {
   num get x => jsObject.x;
   num get y => jsObject.y;
 
-  factory Point(
+  factory PointTwo(
     num x,
     num y,
   ) =>
-      Point.fromJsObject(PointJsImpl(
+      PointTwo.fromJsObject(PointJsImpl(
         x: x,
         y: y,
       ));
 
   /// Creates a new LngLat from a [jsObject].
-  Point.fromJsObject(PointJsImpl jsObject) : super.fromJsObject(jsObject);
+  PointTwo.fromJsObject(PointJsImpl jsObject) : super.fromJsObject(jsObject);
 }

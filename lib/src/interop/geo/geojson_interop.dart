@@ -20,13 +20,13 @@ class FeatureJsImpl {
   external dynamic get id;
   external set id(dynamic id);
   external String get type;
-  external GeometryJsImpl get geometry;
+  external GeometryObjectJSImpl get geometry;
   external dynamic get properties;
   external String get source;
   external factory FeatureJsImpl({
     dynamic id,
     String? type,
-    GeometryJsImpl geometry,
+    GeometryObjectJSImpl geometry,
     dynamic properties,
     String? source,
   });
@@ -34,10 +34,10 @@ class FeatureJsImpl {
 
 @JS()
 @anonymous
-class GeometryJsImpl {
+class GeometryObjectJSImpl {
   external String get type;
   external dynamic get coordinates;
-  external factory GeometryJsImpl({
+  external factory GeometryObjectJSImpl({
     String? type,
     dynamic coordinates,
   });

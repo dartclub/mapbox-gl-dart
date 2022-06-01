@@ -1,85 +1,45 @@
 library mapboxgl.geo.geojson;
 
-import 'package:js/js_util.dart';
 import 'package:mapbox_gl_dart/src/interop/interop.dart';
 import 'package:mapbox_gl_dart/src/utils.dart';
+import 'package:turf/turf.dart';
 
-class FeatureCollection extends JsObjectWrapper<FeatureCollectionJsImpl> {
-  String get type => jsObject.type;
-  List<Feature> get features =>
-      jsObject.features.map((f) => Feature.fromJsObject(f)).toList();
+class GeometryObjectWithJs extends GeometryObject {}
 
-  factory FeatureCollection({
-    required List<Feature> features,
-  }) {
-    return FeatureCollection.fromJsObject(FeatureCollectionJsImpl(
-      type: 'FeatureCollection',
-      features: features.map((f) => f.jsObject).toList(),
-    ));
+class JsConverter {
+  static GeometryObject geometryObjectFromJsObject(
+      GeometryObjectJSImpl jsObject) {
+    return Point(coordinates: Position(10, 10));
   }
 
-  /// Creates a new FeatureCollection from a [jsObject].
-  FeatureCollection.fromJsObject(FeatureCollectionJsImpl jsObject)
-      : super.fromJsObject(jsObject);
+  static Feature featureFromJsObject(FeatureJsImpl jsObject) => Feature(
+        geometry: geometryObjectFromJsObject(jsObject.geometry),
+        id: jsObject.id,
+        properties: dartifyMap(jsObject.properties),
+      );
+
+  static FeatureCollection featureCollectionFromJsObject(
+          FeatureCollectionJsImpl jsObject) =>
+      FeatureCollection(
+        features: jsObject.features.map((f) => featureFromJsObject(f)).toList(),
+      );
 }
 
-class Feature extends JsObjectWrapper<FeatureJsImpl> {
-  dynamic get id => jsObject.id;
-  set id(dynamic id) {
-    jsObject.id = id;
-  }
 
-  String get type => jsObject.type;
-  Geometry get geometry => Geometry.fromJsObject(jsObject.geometry);
-  Map<String, dynamic> get properties => dartifyMap(jsObject.properties);
-  String get source => jsObject.source;
 
-  factory Feature({
-    dynamic id,
-    required Geometry geometry,
-    Map<String, dynamic>? properties,
-    String? source,
-  }) =>
-      Feature.fromJsObject(FeatureJsImpl(
-        type: 'Feature',
-        id: id,
-        geometry: geometry.jsObject,
-        properties: properties == null ? jsify({}) : jsify(properties),
-        source: source,
-      ));
+// class GeometryObject extends JsObjectWrapper<GeometryJsImpl> {
+//   String get type => jsObject.type;
+//   dynamic get coordinates => jsObject.coordinates;
 
-  Feature copyWith({
-    dynamic id,
-    Geometry? geometry,
-    Map<String, dynamic>? properties,
-    String? source,
-  }) =>
-      Feature.fromJsObject(FeatureJsImpl(
-        type: 'Feature',
-        id: id ?? this.id,
-        geometry: geometry != null ? geometry.jsObject : this.geometry.jsObject,
-        properties:
-            properties != null ? jsify(properties) : jsify(this.properties),
-        source: source ?? this.source,
-      ));
+//   factory GeometryObject({
+//     String? type,
+//     dynamic coordinates,
+//   }) =>
+//       GeometryObject.fromJsObject(GeometryJsImpl(
+//         type: type,
+//         coordinates: coordinates,
+//       ));
 
-  /// Creates a new Feature from a [jsObject].
-  Feature.fromJsObject(FeatureJsImpl jsObject) : super.fromJsObject(jsObject);
-}
-
-class Geometry extends JsObjectWrapper<GeometryJsImpl> {
-  String get type => jsObject.type;
-  dynamic get coordinates => jsObject.coordinates;
-
-  factory Geometry({
-    String? type,
-    dynamic coordinates,
-  }) =>
-      Geometry.fromJsObject(GeometryJsImpl(
-        type: type,
-        coordinates: coordinates,
-      ));
-
-  /// Creates a new Geometry from a [jsObject].
-  Geometry.fromJsObject(GeometryJsImpl jsObject) : super.fromJsObject(jsObject);
-}
+//   /// Creates a new GeometryObject from a [jsObject].
+//   GeometryObject.fromJsObject(GeometryJsImpl jsObject) : super.fromJsObject(jsObject);
+// }
